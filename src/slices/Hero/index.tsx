@@ -1,18 +1,20 @@
-import { FC } from "react";
+import { useGSAP } from "@gsap/react";
 import { Content } from "@prismicio/client";
+import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
 import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
-import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
-import { Bounded } from "@/components/Bounded";
 import clsx from "clsx";
+import { gsap } from "gsap";
+import { FC } from "react";
 
-/**
- * Props for `Hero`.
- */
+import { Bounded } from "@/components/Bounded";
+import { FadeIn } from "@/components/Fadein";
+import RevealText from "@/components/RevealText";
+import ButtonLink from "@/components/ButtonLink";
+
+gsap.registerPlugin(useGSAP);
+
 export type HeroProps = SliceComponentProps<Content.HeroSlice>;
 
-/**
- * Component for "Hero" Slices.
- */
 const Hero: FC<HeroProps> = ({ slice }) => {
   return (
     <Bounded
@@ -20,28 +22,47 @@ const Hero: FC<HeroProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
       className="relative min-h-screen overflow-hidden bg-neutral-950"
     >
-      <div className="absolute inset-0 scale-125">
+      <FadeIn
+        className="absolute inset-0 opacity-0 motion-safe:scale-125"
+        vars={{ scale: 1, opacity: 0.5 }}
+      >
         <PrismicNextImage
           field={slice.primary.image}
           alt=""
           priority
           fill
-          className="object-cover opacity-50"
+          className="object-cover motion-reduce:opacity-50"
         />
-      </div>
+      </FadeIn>
 
       <div className="relative flex h-screen flex-col justify-center">
-        <div className="font-display max-w-xl text-6xl leading-tight text-neutral-50 md:text-7xl lg:text-8xl">
-          <PrismicRichText field={slice.primary.heading} />
-        </div>
+        <RevealText
+          id={"hero-heading"}
+          field={slice.primary.heading}
+          staggerAmount={0.2}
+          duration={1.7}
+          as={"h1"}
+        />
 
-        <div className="mt-6 max-w-md text-lg text-neutral-100">
+        <FadeIn
+          className="mt-6 max-w-md translate-y-8 text-lg text-neutral-100"
+          vars={{ delay: 1, duration: 1.3 }}
+        >
           <PrismicRichText field={slice.primary.body} />
-        </div>
+        </FadeIn>
 
-        <div className="mt-8">
+        <FadeIn
+          className="mt-8 translate-y-5"
+          vars={{ delay: 1.7, duration: 1.1 }}
+        >
           {slice.primary.button.map((link) => (
-            <PrismicNextLink
+            <ButtonLink
+              key={link.key}
+              field={link}
+              className="w-fit"
+              variant="Secondary"
+            />
+            /* <PrismicNextLink
               key={link.key}
               field={link}
               className={clsx(
@@ -52,8 +73,9 @@ const Hero: FC<HeroProps> = ({ slice }) => {
                 "w-fit",
               )}
             />
+          ))} */
           ))}
-        </div>
+        </FadeIn>
       </div>
     </Bounded>
   );

@@ -11,6 +11,12 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "product_feature": {
+              "type": "SharedSlice"
+            },
+            "scroll_text": {
+              "type": "SharedSlice"
+            },
             "hero": {
               "type": "SharedSlice"
             }
